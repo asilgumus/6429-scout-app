@@ -1,67 +1,251 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <title>Team Detail</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Team Detail</title>
 </head>
+
 <body class="bg-gray-100">
 
-  <nav class="bg-indigo-600 text-white p-4">
-    <div class="max-w-4xl mx-auto flex justify-between items-center">
-      <h1 class="font-bold text-lg">Team Detail</h1>
-      <a href="index.html" class="bg-white text-indigo-600 px-3 py-1 rounded">Geri</a>
+    <!-- NAV -->
+    <nav class="bg-gradient-to-r from-indigo-600 to-indigo-500 text-white p-4 shadow">
+        <div class="max-w-6xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <a href="/" class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 px-3 py-1 rounded">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none">
+                        <path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg>
+                    Geri
+                </a>
+                <h1 class="font-semibold text-lg">Team Detayları</h1>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto p-4 grid gap-6 md:grid-cols-[280px_1fr]">
+
+        <aside id="summaryPanel" class="space-y-4">
+            <div class="bg-white shadow p-4 rounded-xl">
+                <h2 id="teamTitle" class="text-xl font-semibold">Yükleniyor...</h2>
+                <p class="text-gray-500 text-sm mt-1">Takıma ait tüm maçlar aşağıda listelenir.</p>
+            </div>
+
+            <div class="bg-white shadow p-4 rounded-xl space-y-3">
+                <h3 class="font-semibold text-lg text-gray-700">Filtreler</h3>
+
+                <input id="searchBox" type="search" placeholder="Match ID / Author ara..."
+                    class="w-full px-3 py-2 border rounded-lg shadow-sm" />
+
+                <select id="allianceFilter" class="w-full px-3 py-2 border rounded-lg">
+                    <option value="">Tüm Alliance'ler</option>
+                    <option value="red">Red Alliance</option>
+                    <option value="blue">Blue Alliance</option>
+                </select>
+
+                <button id="sortBtn"
+                    class="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition">
+                    En Yeni → En Eski
+                </button>
+            </div>
+        </aside>
+
+        <!-- MATCH LIST -->
+        <section id="matchList" class="grid gap-4">
+            <!-- JS ile dolduruluyor -->
+        </section>
+
+    </main>
+
+    <!-- MODAL -->
+    <div id="detailModal"
+        class="fixed inset-0 hidden items-center justify-center bg-black/40 z-50 backdrop-blur-sm">
+        <div class="bg-white rounded-xl p-5 max-w-xl w-full shadow-xl">
+            <div class="flex justify-between items-center mb-2">
+                <h3 id="modalTitle" class="text-xl font-semibold">Detay</h3>
+                <button id="closeModal"
+                    class="text-gray-600 hover:text-black text-lg font-bold">&times;</button>
+            </div>
+            <div id="modalBody" class="text-sm space-y-2"></div>
+        </div>
     </div>
-  </nav>
 
-  <div class="max-w-4xl mx-auto p-4">
-    <h2 id="teamTitle" class="text-xl font-semibold mb-4">Yükleniyor...</h2>
+    <script>
+        const matchListEl = document.getElementById("matchList");
+        const teamTitle = document.getElementById("teamTitle");
+        const modal = document.getElementById("detailModal");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalBody = document.getElementById("modalBody");
 
-    <div id="matchList" class="flex flex-col divide-y divide-gray-300"></div>
-  </div>
+        // Filters
+        const searchBox = document.getElementById("searchBox");
+        const allianceFilter = document.getElementById("allianceFilter");
+        const sortBtn = document.getElementById("sortBtn");
 
-  <script>
-    const matchList = document.getElementById("matchList");
-    const teamTitle = document.getElementById("teamTitle");
+        let allMatches = [];
+        let sortDesc = true;
 
-    const params = new URLSearchParams(window.location.search);
-    const teamId = params.get("team_id");
+        const params = new URLSearchParams(window.location.search);
+        const teamId = params.get("team_id");
 
-    if (!teamId) {
-      teamTitle.textContent = "Geçersiz Team ID!";
-    } else {
-      teamTitle.textContent = `Team ${teamId} Maç Detayları`;
+        if (!teamId) {
+            teamTitle.textContent = "Geçersiz Team ID!";
+        } else {
+            teamTitle.textContent = `Team ${teamId} Maç Detayları`;
 
-      // Backende fetch
-      fetch(`/detail_info?team_id=${teamId}`)
-        .then(res => {
-          if (!res.ok) throw new Error("Veri alınamadı");
-          return res.json();
-        })
-        .then(data => {
-          if (data.length === 0) {
-            matchList.innerHTML = `<p class="text-red-500">Bu takım için maç bulunamadı.</p>`;
-            return;
-          }
+            fetch(`/detail_info?team_id=${teamId}`)
+                .then(res => res.json())
+                .then(data => {
+                    allMatches = data;
+                    renderMatches();
+                })
+                .catch(() => {
+                    matchListEl.innerHTML =
+                        `<p class="text-red-500">Veriler yüklenemedi!</p>`;
+                });
+        }
 
-          data.forEach(match => {
-            const div = document.createElement("div");
-            div.className = "p-3 hover:bg-gray-50 transition rounded flex justify-between items-center";
-            div.innerHTML = `
-              <span class="font-bold text-indigo-600">Team ${match.team_number}</span>
-              <span class="text-gray-700">Match: ${match.match_id}</span>
-              <span class="font-medium text-green-600">${match.alliance.toUpperCase()}</span>
-              <span class="text-sm text-gray-500">Auto: ${match.auto_score}, Teleop: ${match.teleop_score}</span>
+        function renderMatches() {
+            let filtered = [...allMatches];
+
+            // HABER AKIŞI KISMI
+            const q = searchBox.value.toLowerCase();
+            if (q) {
+                filtered = filtered.filter(m =>
+                    m.match_id.toString().includes(q) ||
+                    m.author_name.toLowerCase().includes(q)
+                );
+            }
+
+            const f = allianceFilter.value;
+            if (f) filtered = filtered.filter(m => m.alliance === f);
+
+            filtered.sort((a, b) =>
+                sortDesc ? b.match_id - a.match_id : a.match_id - b.match_id
+            );
+
+            if (filtered.length === 0) {
+                matchListEl.innerHTML =
+                    `<p class="text-gray-500">Sonuç bulunamadı.</p>`;
+                return;
+            }
+
+            matchListEl.innerHTML = "";
+
+            filtered.forEach(m => {
+                const card = document.createElement("div");
+                card.className =
+                    "p-4 bg-white rounded-xl shadow hover:shadow-lg transition cursor-pointer";
+
+                card.innerHTML = `
+                    <div class="flex justify-between items-start mb-3">
+                        <div>
+                            <div class="font-semibold text-indigo-600">${m.author_name}</div>
+                            <div class="text-sm text-gray-500">Team ${m.team_number}</div>
+                        </div>
+
+                        <span class="px-2 py-1 rounded text-white text-xs ${m.alliance === "red" ? "bg-red-500" : "bg-blue-600"}">
+                            ${m.alliance.toUpperCase()}
+                        </span>
+                    </div>
+
+                    <div class="text-sm text-gray-700">
+                        <strong>Match:</strong> ${m.match_id}
+                    </div>
+
+                    <div class="grid grid-cols-3 gap-2 text-xs mt-3">
+                        <div class="bg-gray-50 p-2 rounded">
+                            <div class="font-semibold text-xs">AUTO</div>
+                            <div>L1: ${m.auto_score.l1}</div>
+                            <div>Parked: ${m.auto_score.parked ? "✔" : "✖"}</div>
+                        </div>
+
+                        <div class="bg-gray-50 p-2 rounded">
+                            <div class="font-semibold text-xs">TELEOP</div>
+                            <div>L3: ${m.teleop_score.l3}</div>
+                            <div>Fouls: ${m.teleop_score.fouls}</div>
+                        </div>
+
+                        <div class="bg-gray-50 p-2 rounded">
+                            <div class="font-semibold text-xs">ENDGAME</div>
+                            <div>Climb: ${m.endgame.climb}</div>
+                        </div>
+                    </div>
+                `;
+
+                // Open modal on click
+                card.addEventListener("click", () => openModal(m));
+
+                matchListEl.appendChild(card);
+            });
+        }
+
+        // Modal open
+        function openModal(m) {
+            modalTitle.textContent = `Match ${m.match_id} — Team ${m.team_number}`;
+
+            modalBody.innerHTML = `
+                <div class="space-y-3">
+
+                    <div>
+                        <h4 class="font-semibold text-gray-700">AUTO</h4>
+                        <p>L1: ${m.auto_score.l1}</p>
+                        <p>L2: ${m.auto_score.l2}</p>
+                        <p>L3: ${m.auto_score.l3}</p>
+                        <p>L4: ${m.auto_score.l4}</p>
+                        <p>Algae Descore: ${m.auto_score.algaeDescore}</p>
+                        <p>Algae Net: ${m.auto_score.algaeNet}</p>
+                        <p>Parked: ${m.auto_score.parked ? "✔" : "✖"}</p>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-gray-700">TELEOP</h4>
+                        <p>L1: ${m.teleop_score.l1}</p>
+                        <p>L2: ${m.teleop_score.l2}</p>
+                        <p>L3: ${m.teleop_score.l3}</p>
+                        <p>L4: ${m.teleop_score.l4}</p>
+                        <p>Algae Processor: ${m.teleop_score.algaeProcessor}</p>
+                        <p>Algae Net: ${m.teleop_score.algaeNet}</p>
+                        <p>Fouls: ${m.teleop_score.fouls}</p>
+                        <p>Defans: ${m.teleop_score.defense ? "Yaptı" : "Yapmadı"}</p>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-gray-700">ENDGAME</h4>
+                        <p>Climb: ${m.endgame.climb}</p>
+                        <p>Fail: ${m.endgame.fail ? "Evet" : "Hayır"}</p>
+                        <p>Harmony: ${m.endgame.harmony ? "Evet" : "Hayır"}</p>
+                    </div>
+
+                    <div>
+                        <h4 class="font-semibold text-gray-700">Notlar</h4>
+                        <p>${m.notes || "-"}</p>
+                    </div>
+
+                </div>
             `;
-            matchList.appendChild(div);
-          });
-        })
-        .catch(err => {
-          console.error(err);
-          matchList.innerHTML = `<p class="text-red-500">Maç detayları yüklenemedi!</p>`;
+
+            modal.classList.remove("hidden");
+            modal.classList.add("flex");
+        }
+
+        document.getElementById("closeModal").addEventListener("click", () => {
+            modal.classList.add("hidden");
         });
-    }
-  </script>
+
+        searchBox.addEventListener("input", renderMatches);
+        allianceFilter.addEventListener("change", renderMatches);
+        sortBtn.addEventListener("click", () => {
+            sortDesc = !sortDesc;
+            sortBtn.textContent = sortDesc ? "En Yeni → En Eski" : "En Eski → En Yeni";
+            renderMatches();
+        });
+
+    </script>
+
 </body>
+
 </html>

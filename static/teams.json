@@ -1,18 +1,33 @@
 [
   {
+    "author_name": "Asil Doğan Gümüş",
     "team_number": 6429,
-    "match_id": "qm12",
+    "match_id": "q21",
     "alliance": "red",
-    "auto_score": 123,
-    "teleop_score": 123,
-    "notes": "ağpsdlapsd"
-  },
-  {
-    "team_number": 8080,
-    "match_id": "qm12",
-    "alliance": "red",
-    "auto_score": 123,
-    "teleop_score": 123,
-    "notes": "asda"
+    "auto_score": {
+      "l1": 2,
+      "l2": 2,
+      "l3": 2,
+      "l4": 2,
+      "algaeDescore": 2,
+      "algaeNet": 2,
+      "parked": true
+    },
+    "teleop_score": {
+      "l1": 2,
+      "l2": 3,
+      "l3": 3,
+      "l4": 2,
+      "algaeProcessor": 1,
+      "algaeNet": 2,
+      "fouls": 1,
+      "defense": true
+    },
+    "endgame": {
+      "climb": "deep",
+      "fail": false,
+      "harmony": false
+    },
+    "notes": "asd\n"
   }
 ]

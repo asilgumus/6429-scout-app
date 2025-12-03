@@ -4,27 +4,33 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <title>Scout Form</title>
+  <title>Reefscape Scout Form</title>
 </head>
 
 <body class="bg-gray-100">
   <nav class="bg-indigo-600 text-white p-4">
     <div class="max-w-4xl mx-auto flex justify-between items-center">
-      <h1 class="font-bold text-lg">Scout Form</h1>
+      <h1 class="font-bold text-lg">Reefscape Scout Form</h1>
       <a href="/" class="bg-white text-indigo-600 px-3 py-1 rounded">Geri</a>
     </div>
   </nav>
 
   <div class="max-w-4xl mx-auto p-4">
     <form id="scoutForm" class="space-y-4 bg-white p-4 rounded shadow">
+      <!-- BASIC INFO -->
+      <div>
+        <label class="block text-sm font-medium">Yazar</label>
+        <input id="authorName" type="text" class="w-full mt-1 border rounded px-3 py-2">
+      </div>
+
       <div>
         <label class="block text-sm font-medium">Takım Numarası</label>
-        <input id="teamNumber" type="number" class="w-full mt-1 border rounded px-3 py-2" placeholder="6429">
+        <input id="teamNumber" type="number" class="w-full mt-1 border rounded px-3 py-2">
       </div>
 
       <div>
         <label class="block text-sm font-medium">Maç ID</label>
-        <input id="matchId" type="text" class="w-full mt-1 border rounded px-3 py-2" placeholder="qm12">
+        <input id="matchId" type="text" class="w-full mt-1 border rounded px-3 py-2">
       </div>
 
       <div>
@@ -35,18 +41,119 @@
         </select>
       </div>
 
+      <!-- AUTO -->
       <div class="p-3 border rounded bg-gray-50">
-        <h3 class="font-semibold mb-2">Oto</h3>
-        <label class="block text-sm">Oto skor sayısı</label>
-        <input id="autoScore" type="number" class="w-full mt-1 border rounded px-3 py-2" placeholder="0">
+        <h3 class="font-semibold mb-2">Auto</h3>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-sm">Coral L1</label>
+            <input id="autoL1" type="number" class="w-full mt-1 border rounded px-3 py-2">
+          </div>
+
+          <div>
+            <label class="block text-sm">Coral L2</label>
+            <input id="autoL2" type="number" class="w-full mt-1 border rounded px-3 py-2">
+          </div>
+
+          <div>
+            <label class="block text-sm">Coral L3</label>
+            <input id="autoL3" type="number" class="w-full mt-1 border rounded px-3 py-2">
+          </div>
+
+          <div>
+            <label class="block text-sm">Coral L4</label>
+            <input id="autoL4" type="number" class="w-full mt-1 border rounded px-3 py-2">
+          </div>
+
+          <div>
+            <label class="block text-sm">Algae Descore</label>
+            <input id="autoAlgaeDescore" type="number" class="w-full mt-1 border rounded px-3 py-2">
+          </div>
+
+          <div>
+            <label class="block text-sm">Algae Net</label>
+            <input id="autoAlgaeNet" type="number" class="w-full mt-1 border rounded px-3 py-2">
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 mt-3">
+          <input id="autoPark" type="checkbox" class="w-5 h-5">
+          <label class="text-sm">Park Başarılı</label>
+        </div>
       </div>
 
+      <!-- TELEOP -->
       <div class="p-3 border rounded bg-gray-50">
         <h3 class="font-semibold mb-2">Teleop</h3>
-        <label class="block text-sm">Teleop skor sayısı</label>
-        <input id="teleopScore" type="number" class="w-full mt-1 border rounded px-3 py-2" placeholder="0">
+
+        <div class="grid grid-cols-2 gap-3">
+
+          <div>
+            <label class="block text-sm">Coral L1</label>
+            <input id="teleL1" type="number" class="w-full mt-1 border rounded px-3 py-2">
+          </div>
+
+          <div>
+            <label class="block text-sm">Coral L2</label>
+            <input id="teleL2" type="number" class="w-full mt-1 border rounded px-3 py-2">
+          </div>
+
+          <div>
+            <label class="block text-sm">Coral L3</label>
+            <input id="teleL3" type="number" class="w-full mt-1 border rounded px-3 py-2">
+          </div>
+
+          <div>
+            <label class="block text-sm">Coral L4</label>
+            <input id="teleL4" type="number" class="w-full mt-1 border rounded px-3 py-2">
+          </div>
+
+          <div>
+            <label class="block text-sm">Algae Processor</label>
+            <input id="teleAlgaeProcessor" type="number" class="w-full mt-1 border rounded px-3 py-2">
+          </div>
+
+          <div>
+            <label class="block text-sm">Algae Net</label>
+            <input id="teleAlgaeNet" type="number" class="w-full mt-1 border rounded px-3 py-2">
+          </div>
+
+          <div>
+            <label class="block text-sm">Foul Sayısı</label>
+            <input id="fouls" type="number" class="w-full mt-1 border rounded px-3 py-2">
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2 mt-3">
+          <input id="teleDefense" type="checkbox" class="w-5 h-5">
+          <label class="text-sm">Defans Robutu mu</label>
+        </div>
       </div>
 
+      <!-- ENDGAME -->
+      <div class="p-3 border rounded bg-gray-50">
+        <h3 class="font-semibold mb-2">Endgame</h3>
+
+        <label class="text-sm font-medium">Climb Seviyesi</label>
+        <select id="climb" class="w-full mt-1 border rounded px-3 py-2">
+          <option value="none">Yok</option>
+          <option value="shallow">Shallow</option>
+          <option value="deep">Deep</option>
+        </select>
+
+        <div class="flex items-center gap-2 mt-2">
+          <input id="climbFail" type="checkbox" class="w-5 h-5">
+          <label class="text-sm">Climb Fail</label>
+        </div>
+
+        <div class="flex items-center gap-2 mt-2">
+          <input id="harmony" type="checkbox" class="w-5 h-5">
+          <label class="text-sm">Harmony</label>
+        </div>
+      </div>
+
+      <!-- NOTES -->
       <div>
         <label class="block text-sm font-medium">Notlar</label>
         <textarea id="notes" class="w-full mt-1 border rounded px-3 py-2"></textarea>
@@ -62,6 +169,7 @@
   </div>
 
   <script>
+
     const form = document.getElementById("scoutForm");
     const submitBtn = document.getElementById("submitBtn");
     const matchList = document.getElementById("match-list");
@@ -95,12 +203,39 @@
       e.preventDefault();
 
       const data = {
-        team_number: Number(document.querySelector("#teamNumber").value),
-        match_id: document.querySelector("#matchId").value,
-        alliance: document.querySelector("#alliance").value,
-        auto_score: Number(document.querySelector("#autoScore").value),
-        teleop_score: Number(document.querySelector("#teleopScore").value),
-        notes: document.querySelector("#notes").value
+        author: authorName.value,
+        team_number: Number(teamNumber.value),
+        match_id: matchId.value,
+        alliance: alliance.value,
+
+        auto: {
+          l1: Number(autoL1.value),
+          l2: Number(autoL2.value),
+          l3: Number(autoL3.value),
+          l4: Number(autoL4.value),
+          algaeDescore: Number(autoAlgaeDescore.value),
+          algaeNet: Number(autoAlgaeNet.value),
+          parked: autoPark.checked
+        },
+
+        teleop: {
+          l1: Number(teleL1.value),
+          l2: Number(teleL2.value),
+          l3: Number(teleL3.value),
+          l4: Number(teleL4.value),
+          algaeProcessor: Number(teleAlgaeProcessor.value),
+          algaeNet: Number(teleAlgaeNet.value),
+          fouls: Number(fouls.value),
+          defense: teleDefense.checked
+        },
+
+        endgame: {
+          climb: climb.value,
+          fail: climbFail.checked,
+          harmony: harmony.checked
+        },
+
+        notes: notes.value
       };
 
       submitBtn.disabled = true;

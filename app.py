@@ -55,11 +55,13 @@ def create_match():
 
     try:
         entry = {
+            "author_name": str(data.get("author") or ""),
             "team_number": int(data.get("team_number") or 0),
             "match_id": str(data.get("match_id") or ""),
             "alliance": str(data.get("alliance") or ""),
-            "auto_score": int(data.get("auto_score") or 0),
-            "teleop_score": int(data.get("teleop_score") or 0),
+            "auto_score": dict(data.get("auto") or {}),
+            "teleop_score": dict(data.get("teleop") or {}),
+            "endgame": dict(data.get("endgame") or {}),            
             "notes": str(data.get("notes") or "")
         }
     except (ValueError, TypeError) as e:
